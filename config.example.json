@@ -10,7 +10,8 @@
 		}
 	],
 	"token": "EXAMPLE_TOKEN",
-	"username": "VQBot",
+	"username": "vqbot",
+	"greetOnBotJoin": false,
 	"debug": true,
 	"port": 8080
 }

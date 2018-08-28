@@ -55,16 +55,18 @@ class Bot {
 		const { api, chat, chatConstants } = this.client;
 
 		chat.on(chatConstants.MEMBERSHIP_COMMANDS.JOIN, joinMessage => {
-			if(joinMessage.username === this.config.username) {
+			if(joinMessage.username === self.config.username) {
 				console.log('hei', joinMessage);
 				console.log('Bot has joined ', joinMessage.channel);
-				chat.say(joinMessage.channel, `Bot has joined ${joinMessage.channel}`);
+				if(self.config.greetOnBotJoin){
+					chat.say(joinMessage.channel, `Bot has joined ${joinMessage.channel}`);
+				}
 			}
 		});
 
 		Object.keys(self.channels).forEach(channel => {
 			console.log(channel);
-			let ch = this.getChannel(channel);
+			let ch = self.getChannel(channel);
 			chat.on(`PRIVMSG/${channel}`, ch.cm.addListener.bind(ch.cm));
 		});
 
