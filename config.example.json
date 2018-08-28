@@ -1,0 +1,16 @@
+{
+	"channels": [
+		{
+			"name": "#vqbot",
+			"levels": {
+				"0": [],
+				"1": [],
+				"2": ["1234567"]
+			}
+		}
+	],
+	"token": "EXAMPLE_TOKEN",
+	"username": "VQBot",
+	"debug": true,
+	"port": 8080
+}
