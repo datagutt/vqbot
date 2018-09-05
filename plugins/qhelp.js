@@ -21,7 +21,7 @@ export default (ch) => {
 			}
 		}
 		if(message){
-			chat.say(event.channel, message);
+			chat.say(event.channel, message).catch(() => {});
 		}
 	});
 };
