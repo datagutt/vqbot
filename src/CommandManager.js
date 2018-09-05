@@ -1,5 +1,6 @@
+const COOLDOWN_TIME = 10; // in seconds
 export class Command {
-	constructor(name, description, usage, level, hidden, callback) {
+	constructor(name, description, usage, level, hidden, callback, cooldown) {
 		var self = this;
 		self.name = name;
 		self.description = description;
@@ -8,6 +9,8 @@ export class Command {
 		self.hidden = !!hidden;
 		self.callback = callback;
 		self.enabled = true;
+		this.hasCooldown = !!cooldown;
+		this.cooldown = null;
 	}
 }
 export default class CommandManager {
@@ -26,9 +29,9 @@ export default class CommandManager {
 		return USER_LEVEL_NORMAL;
 	}
 
-	addCommand(name, description, usage, level, hidden, callback) {
+	addCommand(name, description, usage, level, hidden, callback, cooldown) {
 		var self = this;
-		self.commands[name] = new Command(name, description, usage, level, hidden, callback);
+		self.commands[name] = new Command(name, description, usage, level, hidden, callback, cooldown);
 	}
 
 	addListener(privateMessage) {
@@ -38,16 +41,27 @@ export default class CommandManager {
 			command,
 			commandObj,
 			params;
-		console.log(message, this.prefix, message.indexOf('!'));
 		if(message.indexOf(this.prefix) == 0){
 			var split = message.split(' ');
 			command = split[0].substring(this.prefix.length).toLowerCase();	
+
+			console.log(message, this.prefix, message.indexOf('!'));
 
 			if(this.commands.hasOwnProperty(command)){
 				console.log(command, this.commands[command]);
 				commandObj = this.commands[command]
 				params = split.slice(1);
 				if(self.getLevel(uid) >= commandObj.level){
+					if(commandObj.hasCooldown){
+						let now = new Date(privateMessage.timestamp).getTime();
+						if(commandObj.cooldown
+							&& (now - commandObj.cooldown) <= (COOLDOWN_TIME * 1000)
+						){
+							console.log('cooldown active, ignoring command');
+							return;
+						}
+						commandObj.cooldown = (new Date).getTime();
+					}
 					if(typeof commandObj.callback == 'function'){
 						console.log('params', params);
 						commandObj.callback.apply(self, [{
