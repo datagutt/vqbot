@@ -20,7 +20,15 @@ export default (ch) => {
 			msg += `${u.name} `;
 		});
 		chat.say(event.channel, msg).catch(() => {});
-	});
+	}, true);
+	ch.cm.addCommand('q', 'Show people in queue', false, USER_LEVEL_NORMAL, true, (event) => {
+		var msg = 'Queue:\n',
+			combinedQueue = getQueue();
+		combinedQueue.forEach((u) => {
+			msg += `${u.name} `;
+		});
+		chat.say(event.channel, msg).catch(() => {});
+	}, true);
 	ch.cm.addCommand('join', 'Join queue', '<info>', USER_LEVEL_NORMAL, false, (event) => {
 		var isInQueue;
 		getQueue().forEach((item, index, object) => {
@@ -53,15 +61,23 @@ export default (ch) => {
 		QueueStorage.set('subQueue', subQueue);
 		QueueStorage.set('queue', queue);
 	});
-	ch.cm.addCommand('qnext', 'Go to next person in queue', '', USER_LEVEL_MODERATOR, false, (event) => {
-		var combinedQueue = getQueue()
-		if(combinedQueue.length > 0){
-			var winner = combinedQueue.shift();
-			chat.say(event.channel, `@${winner.name} is next in queue!`).catch(() => {});
-			if(subQueue.indexOf(winner) > -1){
-				subQueue.splice(subQueue.indexOf(winner), 1);
-			}else if(queue.indexOf(winner) > -1){
-				queue.splice(queue.indexOf(winner), 1);
+	ch.cm.addCommand('qnext', 'Go to next person(s) in queue', '<amount>', USER_LEVEL_MODERATOR, false, (event) => {
+		var combinedQueue = getQueue();
+		var names = [];
+		var amount = (event.state && +event.state[0]) || 1;
+		for(var i = 0; i <= amount; i++){
+			if(combinedQueue.length > 0){
+				var winner = combinedQueue.shift();
+				if(subQueue.indexOf(winner) > -1){
+					subQueue.splice(subQueue.indexOf(winner), 1);
+				}else if(queue.indexOf(winner) > -1){
+					queue.splice(queue.indexOf(winner), 1);
+				}
+				names.push(`@${winner.name}`);
+			}
+
+			if(i == amount){
+				chat.say(event.channel, `${names.join(' ')} is next in queue!`).catch(() => {});
 			}
 		}
 		QueueStorage.set('subQueue', subQueue);
