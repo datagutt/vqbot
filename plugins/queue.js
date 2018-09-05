@@ -83,6 +83,24 @@ export default (ch) => {
 		QueueStorage.set('subQueue', subQueue);
 		QueueStorage.set('queue', queue);
 	});
+	ch.cm.addCommand('qremove', 'Remove person from queue', '', USER_LEVEL_MODERATOR, false, (event) => {
+		var combinedQueue = getQueue()
+		var user = event.params[0];
+		if(user){
+			subQueue.forEach((item, index, object) => {
+				if(item && item.name == user){
+					object.splice(index, 1);
+				}
+			});
+			queue.forEach((item, index, object) => {
+				if(item && item.name == user){
+					object.splice(index, 1);
+				}
+			});
+		}
+		QueueStorage.set('subQueue', subQueue);
+		QueueStorage.set('queue', queue);
+	});
 	ch.cm.addCommand('qclear', 'Clear queue', '', USER_LEVEL_MODERATOR, false, (event) => {
 		subQueue = [];
 		queue = [];
