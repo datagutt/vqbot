@@ -65,7 +65,7 @@ export default (ch) => {
 		var combinedQueue = getQueue();
 		var names = [];
 		var amount = (event.state && +event.state[0]) || 1;
-		for(var i = 0; i <= amount; i++){
+		for(var i = 0; i < amount; i++){
 			if(combinedQueue.length > 0){
 				var winner = combinedQueue.shift();
 				if(subQueue.indexOf(winner) > -1){
@@ -76,7 +76,7 @@ export default (ch) => {
 				names.push(`@${winner.name}`);
 			}
 
-			if(i == amount){
+			if(i == amount - 1){
 				chat.say(event.channel, `${names.join(' ')} is next in queue!`).catch(() => {});
 			}
 		}
