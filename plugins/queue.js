@@ -21,12 +21,12 @@ export default (ch) => {
 	function showQueue(event) {
 		var msg = 'Queue:\n',
 			combinedQueue = getQueue();
-		if(isQueueOpen()){
-			combinedQueue.forEach((u) => {
-				msg += `${u.name} `;
-			});
-		}else{
-			msg = 'Queue is closed';
+		combinedQueue.forEach((u) => {
+			msg += `${u.name} `;
+		});
+		
+		if(!isQueueOpen()){
+			msg += ' (Queue is closed) ';
 		}
 		chat.say(event.channel, msg).catch(() => {});
 	}
@@ -36,6 +36,10 @@ export default (ch) => {
 		queue = [];
 		QueueStorage.set('subQueue', subQueue);
 		QueueStorage.set('queue', queue);
+	}
+
+	if(!QueueStorage.db.hasOwnProperty('open')){
+		QueueStorage.set('open', true);
 	}
 
 	ch.cm.addCommand('queue', 'Show people in queue', false, USER_LEVEL_NORMAL, false, showQueue, true);
