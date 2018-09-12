@@ -63,10 +63,6 @@ export default (ch) => {
 		}
 	});
 	ch.cm.addCommand('leave', 'Leave queue', '', USER_LEVEL_NORMAL, false, (event) => {
-		if(!isQueueOpen()){
-			chat.say(event.channel, 'Queue is closed').catch(() => {});
-			return;
-		}
 		subQueue.forEach((item, index, object) => {
 			if(item && item.name == event.tags.displayName){
 				object.splice(index, 1);
@@ -84,9 +80,8 @@ export default (ch) => {
 		QueueStorage.set('open', true);
 		chat.say(event.channel, 'Queue is now open!').catch(() => {});
 	});
-	ch.cm.addCommand('qclose', 'Closes and clears queue', '', USER_LEVEL_MODERATOR, false, (event) => {
+	ch.cm.addCommand('qclose', 'Closes queue', '', USER_LEVEL_MODERATOR, false, (event) => {
 		QueueStorage.set('open', false);
-		clearQueue();
 		chat.say(event.channel, 'Queue is now closed!').catch(() => {});
 	});
 	ch.cm.addCommand('qnext', 'Go to next person(s) in queue', '<amount>', USER_LEVEL_MODERATOR, false, (event) => {

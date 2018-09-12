@@ -5,8 +5,8 @@ VQBot brukes til å holde styr på viewergames. Den prioriterer alltid subs, men
 3) **!leave** - Forlater køen
 ## Mod-kommandoer:
 4) **!qopen** - Åpner køen
-5) **!qclose** - Stenger og SLETTER hele køen (brukes på slutten av streamen)
+5) **!qclose** - Stenger køen slik at ingen flere kan melde seg på
 6) **!qnext** <amount> - Varsler bruker(e) om at det er deres tur og fjerner fra køen
 7) **!qremove** <user> - Fjerner brukeren fra køen (f.eks. hvis noen er utilgjengelig)
-8) **!qclear** - Sletter hele køen (brukes ved f.eks. bytte av spill)
+8) **!qclear** - Sletter hele køen (brukes ved f.eks. bytte av spil eller ved slutten av streamen)
 9) **!qhelp** - Viser alle tilgjengelige kommandoer hos VQBot
