@@ -1,9 +1,10 @@
 import Storage from '../src/Storage';
+
+const CHANNEL_REGEX = new RegExp("^[&|#][^, "+String.fromCharCode(7)+"]+$", "i");
 export default (ch) => {
 	const { chat, chatConstants } = ch.client;
-	var re = new RegExp("^[&|#][^, "+String.fromCharCode(7)+"]+$", "i");
 
-	if(!ch.name.match(re)) return;
+	if(!ch.name || !ch.name.match(CHANNEL_REGEX)) return;
 
 	var QueueStorage = new Storage(`queue_${ch.name}`),
 		subQueue = QueueStorage.get('subQueue') || [],
@@ -13,24 +14,38 @@ export default (ch) => {
 		return subQueue.concat(queue);
 	}
 
-	ch.cm.addCommand('queue', 'Show people in queue', false, USER_LEVEL_NORMAL, false, (event) => {
+	function isQueueOpen() {
+		return !!QueueStorage.get('open');
+	}
+
+	function showQueue(event) {
 		var msg = 'Queue:\n',
 			combinedQueue = getQueue();
-		combinedQueue.forEach((u) => {
-			msg += `${u.name} `;
-		});
+		if(isQueueOpen()){
+			combinedQueue.forEach((u) => {
+				msg += `${u.name} `;
+			});
+		}else{
+			msg = 'Queue is closed';
+		}
 		chat.say(event.channel, msg).catch(() => {});
-	}, true);
-	ch.cm.addCommand('q', 'Show people in queue', false, USER_LEVEL_NORMAL, true, (event) => {
-		var msg = 'Queue:\n',
-			combinedQueue = getQueue();
-		combinedQueue.forEach((u) => {
-			msg += `${u.name} `;
-		});
-		chat.say(event.channel, msg).catch(() => {});
-	}, true);
+	}
+
+	function clearQueue(){
+		subQueue = [];
+		queue = [];
+		QueueStorage.set('subQueue', subQueue);
+		QueueStorage.set('queue', queue);
+	}
+
+	ch.cm.addCommand('queue', 'Show people in queue', false, USER_LEVEL_NORMAL, false, showQueue, true);
+	ch.cm.addCommand('q', 'Show people in queue', false, USER_LEVEL_NORMAL, true, showQueue, true);
 	ch.cm.addCommand('join', 'Join queue', '<info>', USER_LEVEL_NORMAL, false, (event) => {
 		var isInQueue;
+		if(!isQueueOpen()){
+			chat.say(event.channel, 'Queue is closed').catch(() => {});
+			return;
+		}
 		getQueue().forEach((item, index, object) => {
 			if(item && item.name == event.tags.displayName){
 				isInQueue = true;
@@ -48,6 +63,10 @@ export default (ch) => {
 		}
 	});
 	ch.cm.addCommand('leave', 'Leave queue', '', USER_LEVEL_NORMAL, false, (event) => {
+		if(!isQueueOpen()){
+			chat.say(event.channel, 'Queue is closed').catch(() => {});
+			return;
+		}
 		subQueue.forEach((item, index, object) => {
 			if(item && item.name == event.tags.displayName){
 				object.splice(index, 1);
@@ -61,10 +80,19 @@ export default (ch) => {
 		QueueStorage.set('subQueue', subQueue);
 		QueueStorage.set('queue', queue);
 	});
+	ch.cm.addCommand('qopen', 'Opens up queue', '', USER_LEVEL_MODERATOR, false, (event) => {
+		QueueStorage.set('open', true);
+		chat.say(event.channel, 'Queue is now open!').catch(() => {});
+	});
+	ch.cm.addCommand('qclose', 'Closes and clears queue', '', USER_LEVEL_MODERATOR, false, (event) => {
+		QueueStorage.set('open', false);
+		clearQueue();
+		chat.say(event.channel, 'Queue is now closed!').catch(() => {});
+	});
 	ch.cm.addCommand('qnext', 'Go to next person(s) in queue', '<amount>', USER_LEVEL_MODERATOR, false, (event) => {
 		var combinedQueue = getQueue();
 		var names = [];
-		var amount = (event.state && +event.state[0]) || 1;
+		var amount = (event.params && parseInt(event.params[0], 10)) || 1;
 		for(var i = 0; i < amount; i++){
 			if(combinedQueue.length > 0){
 				var winner = combinedQueue.shift();
@@ -102,13 +130,7 @@ export default (ch) => {
 		QueueStorage.set('queue', queue);
 	});
 	ch.cm.addCommand('qclear', 'Clear queue', '', USER_LEVEL_MODERATOR, false, (event) => {
-		subQueue = [];
-		queue = [];
-		QueueStorage.set('subQueue', subQueue);
-		QueueStorage.set('queue', queue);
+		clearQueue();
 		chat.whisper(event.tags.displayName, `Queue cleared in ${event.channel}`).catch(() => {});
-	});
-	ch.cm.addCommand('test', 'test command', false, USER_LEVEL_MODERATOR, false, (event) => {
-		console.log('inside test command', event);
 	});
 };
