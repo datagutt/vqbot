@@ -1476,9 +1476,10 @@ trim-right@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/trim-right/-/trim-right-1.0.1.tgz#cb2e1203067e0c8de1f614094b9fe45704ea6003"
 
-twitch-js@^2.0.0-beta.14:
-  version "2.0.0-beta.14"
-  resolved "https://registry.yarnpkg.com/twitch-js/-/twitch-js-2.0.0-beta.14.tgz#0431b951bac51589768378ad2040426696dce446"
+twitch-js@^2.0.0-beta.21:
+  version "2.0.0-beta.21"
+  resolved "https://registry.yarnpkg.com/twitch-js/-/twitch-js-2.0.0-beta.21.tgz#55f2916d202cf8b5b4a3446c1d59a3c62d363bb1"
+  integrity sha512-PwRmAHiQySTYgwTqbA6Pz5lJnK6ULeYUhTCXk5z74NR28PBnV6yYFhmhuTV+0ia4UpvXWhYcWzexUIy//4kRFA==
   dependencies:
     babel-runtime "^6.26.0"
     better-queue "^3.8.7"

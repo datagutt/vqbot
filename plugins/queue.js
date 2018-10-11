@@ -51,13 +51,13 @@ export default (ch) => {
 			return;
 		}
 		getQueue().forEach((item, index, object) => {
-			if(item && item.name == event.tags.displayName){
+			if(item && item.name == event.tags.username){
 				isInQueue = true;
 			}
 		});
 		if(!isInQueue){
 			(event.tags.isSubscriber ? subQueue : queue).push({
-				name: event.tags.displayName,
+				name: event.tags.username,
 				params: event.params,
 			});
 			QueueStorage.set(
@@ -68,12 +68,12 @@ export default (ch) => {
 	});
 	ch.cm.addCommand('leave', 'Leave queue', '', USER_LEVEL_NORMAL, false, (event) => {
 		subQueue.forEach((item, index, object) => {
-			if(item && item.name == event.tags.displayName){
+			if(item && item.name == event.tags.username){
 				object.splice(index, 1);
 			}
 		});
 		queue.forEach((item, index, object) => {
-			if(item && item.name == event.tags.displayName){
+			if(item && item.name == event.tags.username){
 				object.splice(index, 1);
 			}
 		});
@@ -130,6 +130,6 @@ export default (ch) => {
 	});
 	ch.cm.addCommand('qclear', 'Clear queue', '', USER_LEVEL_MODERATOR, false, (event) => {
 		clearQueue();
-		chat.whisper(event.tags.displayName, `Queue cleared in ${event.channel}`).catch(() => {});
+		chat.whisper(event.tags.username, `Queue cleared in ${event.channel}`).catch(() => {});
 	});
 };
