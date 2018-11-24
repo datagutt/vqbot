@@ -139,7 +139,7 @@ export default (ch) => {
 	});
 	ch.cm.addCommand('qremove', 'Remove person from queue', '', USER_LEVEL_MODERATOR, false, (event) => {
 		var combinedQueue = getQueue()
-		var user = event.params[0];
+		var user = event.params[0].toLowerCase();
 		if(user){
 			subQueue.forEach((item, index, object) => {
 				if(item && item.name == user){
