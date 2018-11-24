@@ -1,6 +1,13 @@
 import Storage from '../src/Storage';
 
 const CHANNEL_REGEX = new RegExp("^[&|#][^, "+String.fromCharCode(7)+"]+$", "i");
+
+function getRandomInt(min, max) {
+	min = Math.ceil(min);
+	max = Math.floor(max);
+	return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+}
+
 export default (ch) => {
 	const { chat, chatConstants } = ch.client;
 
@@ -87,6 +94,26 @@ export default (ch) => {
 	ch.cm.addCommand('qclose', 'Closes queue', '', USER_LEVEL_MODERATOR, false, (event) => {
 		QueueStorage.set('open', false);
 		chat.say(event.channel, 'Queue is now closed!').catch(() => {});
+	});
+	ch.cm.addCommand('qrandom', 'Grab random person from queue', '', USER_LEVEL_MODERATOR, false, (event) => {
+		var combinedQueue = getQueue();
+		var user = combinedQueue[getRandomInt(0, combinedQueue.length)];
+		if(user){
+			subQueue.forEach((item, index, object) => {
+				if(item && item.name == user.name){
+					object.splice(index, 1);
+					chat.say(event.channel, `${user.name)} is next in queue!`).catch(() => {});
+				}
+			});
+			queue.forEach((item, index, object) => {
+				if(item && item.name == user.name){
+					object.splice(index, 1);
+					chat.say(event.channel, `${user.name)} is next in queue!`).catch(() => {});
+				}
+			});
+		}
+		QueueStorage.set('subQueue', subQueue);
+		QueueStorage.set('queue', queue);
 	});
 	ch.cm.addCommand('qnext', 'Go to next person(s) in queue', '<amount>', USER_LEVEL_MODERATOR, false, (event) => {
 		var combinedQueue = getQueue();
