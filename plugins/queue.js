@@ -102,13 +102,13 @@ export default (ch) => {
 			subQueue.forEach((item, index, object) => {
 				if(item && item.name == user.name){
 					object.splice(index, 1);
-					chat.say(event.channel, `${user.name)} is next in queue!`).catch(() => {});
+					chat.say(event.channel, `${user.name} is next in queue!`).catch(() => {});
 				}
 			});
 			queue.forEach((item, index, object) => {
 				if(item && item.name == user.name){
 					object.splice(index, 1);
-					chat.say(event.channel, `${user.name)} is next in queue!`).catch(() => {});
+					chat.say(event.channel, `${user.name} is next in queue!`).catch(() => {});
 				}
 			});
 		}

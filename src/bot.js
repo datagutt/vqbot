@@ -20,6 +20,14 @@ class Bot {
 	
 	}
 
+	getUsernameFromRaw(raw){
+		const match = raw.match(/@([a-z_0-9]*).tmi.twitch.tv/);
+		if(match){
+			return match[1];
+		}
+		return null;
+	}
+
 	getChannel(name){
 		return this.channels[name];
 	}
@@ -53,6 +61,10 @@ class Bot {
 	start(){
 		let self = this;
 		const { api, chat, chatConstants } = this.client;
+
+		chat.on('PRIVMSG', (privateMessage) => {
+			privateMessage.tags.username = this.getUsernameFromRaw(privateMessage._raw);
+		});
 
 		chat.on(chatConstants.MEMBERSHIP_COMMANDS.JOIN, joinMessage => {
 			if(joinMessage.username === self.config.username) {
