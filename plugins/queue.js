@@ -15,7 +15,27 @@ export default (ch) => {
 
 	var QueueStorage = new Storage(`queue_${ch.name}`),
 		subQueue = QueueStorage.get('subQueue') || [],
-		queue = QueueStorage.get('queue') || [];
+		queue = QueueStorage.get('queue') || [],
+		blocked = QueueStorage.get('blocked') || [];
+
+	function removeUser(params){
+		var combinedQueue = getQueue()
+		var user = params[0].toLowerCase();
+		if(user){
+			subQueue.forEach((item, index, object) => {
+				if(item && item.name == user){
+					object.splice(index, 1);
+				}
+			});
+			queue.forEach((item, index, object) => {
+				if(item && item.name == user){
+					object.splice(index, 1);
+				}
+			});
+		}
+		QueueStorage.set('subQueue', subQueue);
+		QueueStorage.set('queue', queue);
+	}
 
 	function getQueue() {
 		return subQueue.concat(queue);
@@ -95,6 +115,21 @@ export default (ch) => {
 		QueueStorage.set('open', false);
 		chat.say(event.channel, 'Queue is now closed!').catch(() => {});
 	});
+	ch.cm.addCommand('qblock', 'Block person from queue', '<info>', USER_LEVEL_MODERATOR, false, (event) => {
+		var user = event.params[0].toLowerCase();
+		// First remove user from queue
+		removeUser(event.params);
+		blocked.push(user);
+		QueueStorage.set('blocked', blocked);
+	});
+	ch.cm.addCommand('qunblock', 'Unblock person from queue', '<info>', USER_LEVEL_MODERATOR, false, (event) => {
+		blocked.forEach((item, index, object) => {
+			if(item && item.name == event.tags.username){
+				object.splice(index, 1);
+			}
+		});
+		QueueStorage.set('blocked', blocked);
+	});
 	ch.cm.addCommand('qrandom', 'Grab random person from queue', '', USER_LEVEL_MODERATOR, false, (event) => {
 		var combinedQueue = getQueue();
 		var user = combinedQueue[getRandomInt(0, combinedQueue.length)];
@@ -138,22 +173,7 @@ export default (ch) => {
 		QueueStorage.set('queue', queue);
 	});
 	ch.cm.addCommand('qremove', 'Remove person from queue', '', USER_LEVEL_MODERATOR, false, (event) => {
-		var combinedQueue = getQueue()
-		var user = event.params[0].toLowerCase();
-		if(user){
-			subQueue.forEach((item, index, object) => {
-				if(item && item.name == user){
-					object.splice(index, 1);
-				}
-			});
-			queue.forEach((item, index, object) => {
-				if(item && item.name == user){
-					object.splice(index, 1);
-				}
-			});
-		}
-		QueueStorage.set('subQueue', subQueue);
-		QueueStorage.set('queue', queue);
+		removeUser(event.params);
 	});
 	ch.cm.addCommand('qclear', 'Clear queue', '', USER_LEVEL_MODERATOR, false, (event) => {
 		clearQueue();

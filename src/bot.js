@@ -63,7 +63,9 @@ class Bot {
 		const { api, chat, chatConstants } = this.client;
 
 		chat.on('PRIVMSG', (privateMessage) => {
-			privateMessage.tags.username = this.getUsernameFromRaw(privateMessage._raw);
+			if(!privateMessage.tags.username){
+				privateMessage.tags.username = this.getUsernameFromRaw(privateMessage._raw);
+			}
 		});
 
 		chat.on(chatConstants.MEMBERSHIP_COMMANDS.JOIN, joinMessage => {
