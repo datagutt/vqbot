@@ -82,7 +82,7 @@ export default (ch) => {
 				isInQueue = true;
 			}
 		});
-		if(!isInQueue){
+		if(!isInQueue && blocked.indexOf(event.tags.username) === -1){
 			(event.tags.isSubscriber ? subQueue : queue).push({
 				name: event.tags.username,
 				params: event.params,
@@ -120,6 +120,7 @@ export default (ch) => {
 		// First remove user from queue
 		removeUser(event.params);
 		blocked.push(user);
+		chat.whisper(event.tags.username, `${user} has been naughty, and can no longer join queue.`).catch(() => {});
 		QueueStorage.set('blocked', blocked);
 	});
 	ch.cm.addCommand('qunblock', 'Unblock person from queue', '<info>', USER_LEVEL_MODERATOR, false, (event) => {
@@ -128,6 +129,7 @@ export default (ch) => {
 				object.splice(index, 1);
 			}
 		});
+		chat.whisper(event.tags.username, `${user} has been pardoned, and can now join queue.`).catch(() => {});
 		QueueStorage.set('blocked', blocked);
 	});
 	ch.cm.addCommand('qrandom', 'Grab random person from queue', '', USER_LEVEL_MODERATOR, false, (event) => {
