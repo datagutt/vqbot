@@ -126,7 +126,7 @@ export default (ch) => {
 	ch.cm.addCommand('qunblock', 'Unblock person from queue', '<info>', USER_LEVEL_MODERATOR, false, (event) => {
 		var user = event.params[0].toLowerCase();
 		blocked.forEach((item, index, object) => {
-			if(item && item === event.tags.username){
+			if(item && item.toLowerCase() === event.tags.username){
 				object.splice(index, 1);
 			}
 		});
