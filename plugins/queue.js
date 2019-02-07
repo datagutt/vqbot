@@ -124,6 +124,7 @@ export default (ch) => {
 		QueueStorage.set('blocked', blocked);
 	});
 	ch.cm.addCommand('qunblock', 'Unblock person from queue', '<info>', USER_LEVEL_MODERATOR, false, (event) => {
+		var user = event.params[0].toLowerCase();
 		blocked.forEach((item, index, object) => {
 			if(item && item.name == event.tags.username){
 				object.splice(index, 1);
