@@ -117,6 +117,8 @@ export default (ch) => {
 	});
 	ch.cm.addCommand('qblock', 'Block person from queue', '<info>', USER_LEVEL_MODERATOR, false, (event) => {
 		var user = event.params[0].toLowerCase();
+		// TODO: make this work for all mods omegalul
+		if(user === 'datagutt') return;
 		// First remove user from queue
 		removeUser(event.params);
 		blocked.push(user);
