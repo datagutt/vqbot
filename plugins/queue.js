@@ -74,7 +74,8 @@ export default (ch) => {
 	ch.cm.addCommand('join', 'Join queue', '<info>', USER_LEVEL_NORMAL, false, (event) => {
 		var isInQueue;
 		console.log('join', event);
-		var shouldBeSub = (event.badges) ? event.badges.subscriber || event.badges.broadcaster : false;
+		var shouldBeSub = (event.tags && event.tags.badges) 
+			? event.tags.badges.subscriber >= 0 || event.tags.badges.broadcaster : false;
 		if(!isQueueOpen()){
 			chat.say(event.channel, 'Queue is closed').catch(() => {});
 			return;
@@ -91,7 +92,7 @@ export default (ch) => {
 			});
 			QueueStorage.set(
 				shouldBeSub ? 'subQueue' : 'queue',
-				(shouldbeSub ? subQueue : queue)
+				(shouldBeSub ? subQueue : queue)
 			);
 		}
 	});
