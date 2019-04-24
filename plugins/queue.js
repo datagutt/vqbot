@@ -73,6 +73,7 @@ export default (ch) => {
 	ch.cm.addCommand('q', 'Show people in queue', false, USER_LEVEL_NORMAL, true, showQueue, true);
 	ch.cm.addCommand('join', 'Join queue', '<info>', USER_LEVEL_NORMAL, false, (event) => {
 		var isInQueue;
+		var shouldBeSub = event.badges.subscriber || event.badges.broadcaster;
 		if(!isQueueOpen()){
 			chat.say(event.channel, 'Queue is closed').catch(() => {});
 			return;
@@ -83,13 +84,13 @@ export default (ch) => {
 			}
 		});
 		if(!isInQueue && blocked.indexOf(event.tags.username) === -1){
-			(event.tags.isSubscriber ? subQueue : queue).push({
+			(shouldBeSub ? subQueue : queue).push({
 				name: event.tags.username,
 				params: event.params,
 			});
 			QueueStorage.set(
-				event.tags.isSubscriber ? 'subQueue' : 'queue',
-				(event.tags.isSubscriber ? subQueue : queue)
+				shouldBeSub ? 'subQueue' : 'queue',
+				(shouldbeSub ? subQueue : queue)
 			);
 		}
 	});
