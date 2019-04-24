@@ -73,7 +73,8 @@ export default (ch) => {
 	ch.cm.addCommand('q', 'Show people in queue', false, USER_LEVEL_NORMAL, true, showQueue, true);
 	ch.cm.addCommand('join', 'Join queue', '<info>', USER_LEVEL_NORMAL, false, (event) => {
 		var isInQueue;
-		var shouldBeSub = event.badges.subscriber || event.badges.broadcaster;
+		console.log('join', event);
+		var shouldBeSub = (event.badges) ? event.badges.subscriber || event.badges.broadcaster : false;
 		if(!isQueueOpen()){
 			chat.say(event.channel, 'Queue is closed').catch(() => {});
 			return;
