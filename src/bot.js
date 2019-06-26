@@ -67,10 +67,10 @@ class Bot {
 				privateMessage.tags.username = this.getUsernameFromRaw(privateMessage._raw);
 			}
 			if(privateMessage.message && privateMessage.message.trim() === 'gachiBASS'){
-				chat.say(event.channel, 'gachiBASS').catch(() => {});
+				chat.say(privateMessage.channel, 'gachiBASS').catch(() => {});
 			}
 			if(privateMessage.message && privateMessage.message.trim() === 'ricardoFlick'){
-				chat.say(event.channel, 'ricardoFlick').catch(() => {});
+				chat.say(privateMessage.channel, 'ricardoFlick').catch(() => {});
 			}
 		});
 
