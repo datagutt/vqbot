@@ -66,6 +66,9 @@ class Bot {
 			if(!privateMessage.tags.username){
 				privateMessage.tags.username = this.getUsernameFromRaw(privateMessage._raw);
 			}
+			if(privateMessage.message && privateMessage.message.trim() === 'gachiBASS'
+				chat.say('gachiBASS');
+			}
 		});
 
 		chat.on(chatConstants.MEMBERSHIP_COMMANDS.JOIN, joinMessage => {
