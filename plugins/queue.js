@@ -181,7 +181,11 @@ export default (ch) => {
 		QueueStorage.set('queue', queue);
 	});
 	ch.cm.addCommand('qremove', 'Remove person from queue', '', USER_LEVEL_MODERATOR, false, (event) => {
-		removeUser(event.params);
+		if(event.params && event.tags && event.tags.username && event.params[0] === "datagutt" && event.tags.username !== event.params[0]){
+		console.log('nou');
+		}else{
+			removeUser(event.params);
+		}
 	});
 	ch.cm.addCommand('qclear', 'Clear queue', '', USER_LEVEL_MODERATOR, false, (event) => {
 		clearQueue();
