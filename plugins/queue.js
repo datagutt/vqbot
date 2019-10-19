@@ -75,7 +75,7 @@ export default (ch) => {
 		var isInQueue;
 		console.log('join', event);
 		var shouldBeSub = (event.tags && event.tags.badges) 
-			? event.tags.badges.subscriber >= 0 || event.tags.badges.broadcaster : false;
+			? event.tags.badges.subscriber >= 0 || (typeof event.tags.badges.founder !== 'undefined') || event.tags.badges.broadcaster : false;
 		if(!isQueueOpen()){
 			chat.say(event.channel, 'Queue is closed').catch(() => {});
 			return;
