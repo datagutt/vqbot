@@ -17,7 +17,7 @@ export default (ch) => {
 		subQueue = QueueStorage.get('subQueue') || [],
 		queue = QueueStorage.get('queue') || [],
 		blocked = QueueStorage.get('blocked') || [],
-		subPriority = QueueStorage.get('subPriority');
+		subPriority = QueueStorage.get('subPriority') || false;
 
 	function removeUser(params){
 		var combinedQueue = getQueue()
