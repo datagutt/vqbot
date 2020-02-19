@@ -197,8 +197,8 @@ export default (ch) => {
 		}
 	});
 	ch.cm.addCommand('subpriority', 'Enable/disable subpriority', '', USER_LEVEL_MODERATOR, false, (event) => {
-		subPriority = !isSubPriority();
-		QueueStorage.set('subPriority', subPriority);
+		let subpriority = !isSubPriority();
+		QueueStorage.set('subPriority', subpriority);
 		chat.say(event.channel, `Sub queue is now ${isSubPriority() ? 'enabled' : 'disabled'}!`).catch(() => {});
 	});
 	ch.cm.addCommand('qclear', 'Clear queue', '', USER_LEVEL_MODERATOR, false, (event) => {
