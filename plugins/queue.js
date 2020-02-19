@@ -196,7 +196,7 @@ export default (ch) => {
 			removeUser(event.params);
 		}
 	});
-	ch.cm.addCommand('subPriority', 'Enable/disable subpriority', '', USER_LEVEL_MODERATOR, false, (event) => {
+	ch.cm.addCommand('subpriority', 'Enable/disable subpriority', '', USER_LEVEL_MODERATOR, false, (event) => {
 		subPriority = !isSubPriority();
 		QueueStorage.set('subPriority', subPriority);
 		chat.say(event.channel, `Sub queue is now ${isSubPriority() ? 'enabled' : 'disabled'}!`).catch(() => {});
