@@ -16,8 +16,7 @@ export default (ch) => {
 	var QueueStorage = new Storage(`queue_${ch.name}`),
 		subQueue = QueueStorage.get('subQueue') || [],
 		queue = QueueStorage.get('queue') || [],
-		blocked = QueueStorage.get('blocked') || [],
-		subPriority = QueueStorage.get('subPriority') || false;
+		blocked = QueueStorage.get('blocked') || [];
 
 	function removeUser(params){
 		var combinedQueue = getQueue()
@@ -44,6 +43,10 @@ export default (ch) => {
 
 	function isQueueOpen() {
 		return !!QueueStorage.get('open');
+	}
+
+	function isSubPriority() {
+		return !!QueueStorage.get('subPriority');
 	}
 
 	function showQueue(event) {
@@ -76,7 +79,7 @@ export default (ch) => {
 		var isInQueue;
 		console.log('join', event);
 		var shouldBeSub;
-		if(subPriority){
+		if(isSubPriority()){
 			shouldBeSub = (event.tags && event.tags.badges) 
 				? event.tags.badges.subscriber >= 0 || (typeof event.tags.badges.founder !== 'undefined') || event.tags.badges.broadcaster : false;
 		}else{
@@ -194,9 +197,9 @@ export default (ch) => {
 		}
 	});
 	ch.cm.addCommand('subPriority', 'Enable/disable subpriority', '', USER_LEVEL_MODERATOR, false, (event) => {
-		subPriority = !QueueStorage.get('subPriority');
+		subPriority = !isSubPriority();
 		QueueStorage.set('subPriority', subPriority);
-		chat.say(event.channel, `Sub queue is now ${QueueStorage.get('subPriority') ? 'enabled' : 'disabled'}!`).catch(() => {});
+		chat.say(event.channel, `Sub queue is now ${isSubPriority() ? 'enabled' : 'disabled'}!`).catch(() => {});
 	});
 	ch.cm.addCommand('qclear', 'Clear queue', '', USER_LEVEL_MODERATOR, false, (event) => {
 		clearQueue();
