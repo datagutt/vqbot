@@ -19,7 +19,6 @@ export default (ch) => {
 		blocked = QueueStorage.get('blocked') || [];
 
 	function removeUser(params){
-		var combinedQueue = getQueue()
 		var user = params[0].toLowerCase();
 		if(user){
 			subQueue.forEach((item, index, object) => {
@@ -49,6 +48,10 @@ export default (ch) => {
 		return !!QueueStorage.get('subPriority');
 	}
 
+	function useNorwegianAlias() {
+		return !!QueueStorage.get('norwegianAlias');
+	}
+
 	function showQueue(event) {
 		var msg = 'Queue:\n',
 			combinedQueue = getQueue();
@@ -62,20 +65,7 @@ export default (ch) => {
 		chat.say(event.channel, msg).catch(() => {});
 	}
 
-	function clearQueue(){
-		subQueue = [];
-		queue = [];
-		QueueStorage.set('subQueue', subQueue);
-		QueueStorage.set('queue', queue);
-	}
-
-	if(!QueueStorage.db.hasOwnProperty('open')){
-		QueueStorage.set('open', true);
-	}
-
-	ch.cm.addCommand('queue', 'Show people in queue', false, USER_LEVEL_NORMAL, false, showQueue, true);
-	ch.cm.addCommand('q', 'Show people in queue', false, USER_LEVEL_NORMAL, true, showQueue, true);
-	ch.cm.addCommand('join', 'Join queue', '<info>', USER_LEVEL_NORMAL, false, (event) => {
+	function joinQueue(event){
 		var isInQueue;
 		console.log('join', event);
 		var shouldBeSub;
@@ -89,7 +79,7 @@ export default (ch) => {
 			chat.say(event.channel, 'Queue is closed').catch(() => {});
 			return;
 		}
-		getQueue().forEach((item, index, object) => {
+		getQueue().forEach((item) => {
 			if(item && item.name == event.tags.username){
 				isInQueue = true;
 			}
@@ -104,8 +94,9 @@ export default (ch) => {
 				(shouldBeSub ? subQueue : queue)
 			);
 		}
-	});
-	ch.cm.addCommand('leave', 'Leave queue', '', USER_LEVEL_NORMAL, false, (event) => {
+	}
+
+	function leaveQueue(event){
 		subQueue.forEach((item, index, object) => {
 			if(item && item.name == event.tags.username){
 				object.splice(index, 1);
@@ -118,7 +109,32 @@ export default (ch) => {
 		});
 		QueueStorage.set('subQueue', subQueue);
 		QueueStorage.set('queue', queue);
-	});
+	}
+
+	function clearQueue(){
+		subQueue = [];
+		queue = [];
+		QueueStorage.set('subQueue', subQueue);
+		QueueStorage.set('queue', queue);
+	}
+
+	if(!QueueStorage.db.hasOwnProperty('open')){
+		QueueStorage.set('open', true);
+	}
+
+	if(useNorwegianAlias){
+		ch.cm.addCommand('kø', 'Vis folk i kø', false, USER_LEVEL_NORMAL, false, showQueue, true);
+	}
+	ch.cm.addCommand('queue', 'Show people in queue', false, USER_LEVEL_NORMAL, false, showQueue, true);
+	ch.cm.addCommand('q', 'Show people in queue', false, USER_LEVEL_NORMAL, true, showQueue, true);
+	if(useNorwegianAlias){
+		ch.cm.addCommand('blimed', 'Bli med i køen', false, USER_LEVEL_NORMAL, false, joinQueue);
+	}
+	ch.cm.addCommand('join', 'Join queue', '<info>', USER_LEVEL_NORMAL, false, joinQueue);
+	if(useNorwegianAlias){
+		ch.cm.addCommand('forlat', 'Forlat køen', false, USER_LEVEL_NORMAL, false, leaveQueue);
+	}
+	ch.cm.addCommand('leave', 'Leave queue', '', USER_LEVEL_NORMAL, false, leaveQueue);
 	ch.cm.addCommand('qopen', 'Opens up queue', '', USER_LEVEL_MODERATOR, false, (event) => {
 		QueueStorage.set('open', true);
 		chat.say(event.channel, 'Queue is now open!').catch(() => {});
@@ -200,6 +216,11 @@ export default (ch) => {
 		let subpriority = !isSubPriority();
 		QueueStorage.set('subPriority', subpriority);
 		chat.say(event.channel, `Sub queue is now ${isSubPriority() ? 'enabled' : 'disabled'}!`).catch(() => {});
+	});
+	ch.cm.addCommand('norwegianAlias', 'Enable/disable norwegian alias', '', USER_LEVEL_MODERATOR, false, (event) => {
+		let norwegianalias = !useNorwegianAlias();
+		QueueStorage.set('norwegianAlias', norwegianalias);
+		chat.say(event.channel, `Norwegian alias ${useNorwegianAlias() ? 'enabled' : 'disabled'}!`).catch(() => {});
 	});
 	ch.cm.addCommand('qclear', 'Clear queue', '', USER_LEVEL_MODERATOR, false, (event) => {
 		clearQueue();
