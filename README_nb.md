@@ -1,8 +1,8 @@
 # Hvordan bruke VQBot (køsystem):
 VQBot er en bot som brukes til å holde styr på viewergames.
-1) **!queue**/**!q** - Viser folk i kø
-2) **!join** - Legger deg i kø
-3) **!leave** - Forlater køen
+1) **!queue**/**!q**/**!kø** - Viser folk i kø
+2) **!join**/**!blimed** - Legger deg i kø
+3) **!leave**/**!forlat** - Forlater køen
 ## Mod-kommandoer:
 4) **!qopen** - Åpner køen
 5) **!qclose** - Stenger køen slik at ingen flere kan melde seg på
