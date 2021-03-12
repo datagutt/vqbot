@@ -74,7 +74,7 @@ class Bot {
 			}
 		});
 
-		chat.on(chatConstants.MEMBERSHIP_COMMANDS.JOIN, joinMessage => {
+		chat.on(chatConstants.MembershipCommands.JOIN, joinMessage => {
 			if(joinMessage.username === self.config.username) {
 				console.log('hei', joinMessage);
 				console.log('Bot has joined ', joinMessage.channel);
